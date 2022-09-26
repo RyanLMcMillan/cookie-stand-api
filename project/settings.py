@@ -7,7 +7,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-from datetime import timedelta
 from pathlib import Path
 import environ
 
@@ -58,7 +57,7 @@ INSTALLED_APPS = [
     "corsheaders",
     # local
     "accounts",
-    "cookie_stand",
+    "cookie_stands",
 ]
 
 MIDDLEWARE = [
@@ -105,6 +104,10 @@ DATABASES = {
         "PASSWORD": env.str("DATABASE_PASSWORD"),
         "HOST": env.str("DATABASE_HOST"),
         "PORT": env.int("DATABASE_PORT"),
+        ##options: this might fix an error if db can't let you access from local and heroku at same time
+        # "OPTIONS": {
+        #     "init__command":"SET GLOBAL max_connections=1000"
+        # }
     }
 }
 
@@ -164,13 +167,9 @@ REST_FRAMEWORK = {
     ],
 }
 
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(
-        seconds=60 * 60
-    ),  # lasts for 60 minutes
-}
-
 CORS_ORIGIN_WHITELIST = tuple(env.list("ALLOWED_ORIGINS"))
 CORS_ALLOW_ALL_ORIGINS = env.bool("ALLOW_ALL_ORIGINS")
 
-CSRF_TRUSTED_ORIGINS = tuple(env.list('CSRF_TRUSTED_ORIGINS'))
+CSRF_TRUSTED_ORIGINS = [
+    'https://cookie-store-api-dwight.herokuapp.com'
+]
